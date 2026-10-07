@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>United India Insurance — Vehicle Index</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0d1b2e;--navy2:#132035;--navy3:#1a2a45;--gold:#c9a84c;--gold2:#e8c96a;--gold3:#f5e09a;--white:#f0eeea;--muted:#8fa3b8;--border:#1e3050;--row-odd:#0f1e33;--row-even:#0d1b2e;--row-hover:#1a2f4a;--green:#27ae60;--red:#c0392b;--blue:#2980b9;--orange:#e67e22}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy);color:var(--white);font-family:'Noto Sans',sans-serif;min-height:100vh}
+.header{background:linear-gradient(135deg,#0a1520 0%,#132035 60%,#0a1520 100%);border-bottom:2px solid var(--gold);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 4px 24px rgba(0,0,0,.5)}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo-emblem{width:40px;height:40px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:var(--gold);background:rgba(201,168,76,.08)}
+.brand-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.brand-subtitle{font-size:10px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:1px}
+.header-right{display:flex;align-items:center;gap:8px}
+.header-badge{background:rgba(201,168,76,.12);border:1px solid var(--gold);color:var(--gold2);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;padding:6px 12px;border-radius:4px}
+.sync-status{display:flex;align-items:center;gap:6px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;cursor:pointer}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.sync-dot.live{background:var(--green);box-shadow:0 0 6px var(--green)}
+.sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite}
+.sync-dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hbtn{border:none;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;padding:7px 12px;border-radius:4px;cursor:pointer;text-transform:uppercase;white-space:nowrap}
+.hbtn-green{background:var(--green);color:#fff}.hbtn-green:hover{background:#219a52}
+.search-section{background:var(--navy2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-box{position:relative;flex:1;min-width:220px}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none}
+.search-input{width:100%;background:var(--navy3);border:1.5px solid var(--border);border-radius:6px;color:var(--white);font-size:16px;padding:9px 10px 9px 32px;outline:none}
+.search-input:focus,.filter-select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+.filter-select{background:var(--navy3);border:1.5px solid var(--border);border-radius:6px;color:var(--white);font-size:16px;padding:9px 10px;outline:none;min-width:130px;max-width:210px}
+.filter-select option{background:var(--navy3)}
+.chk-lbl{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--orange);cursor:pointer;white-space:nowrap}
+.btn-clear{background:transparent;border:1.5px solid var(--red);color:#e74c3c;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;padding:9px 14px;border-radius:6px;cursor:pointer;text-transform:uppercase}
+.btn-clear:hover{background:var(--red);color:#fff}
+.result-count{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;color:var(--gold);letter-spacing:1px;white-space:nowrap}
+.table-wrapper{overflow:auto;max-height:calc(100vh - 215px)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{position:sticky;top:0;z-index:10}
+thead th{background:#091525;color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 14px;text-align:left;border-bottom:2px solid var(--gold);white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{background:#0d1e35}thead th.no-sort{cursor:default}
+thead th .sa{margin-left:4px;opacity:.4;font-size:9px}thead th.sorted .sa{opacity:1;color:var(--gold2)}
+tbody tr{border-bottom:1px solid rgba(30,48,80,.5)}
+tbody tr:nth-child(odd){background:var(--row-odd)}tbody tr:nth-child(even){background:var(--row-even)}
+tbody tr:hover{background:var(--row-hover)}
+tbody td{padding:9px 14px;vertical-align:middle}
+tbody tr.dup-row td:first-child{border-left:3px solid var(--orange)}
+.series-badge{display:inline-block;min-width:32px;text-align:center;padding:2px 8px;border-radius:3px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--gold2);background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4)}
+.veh{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;color:var(--gold3);white-space:nowrap}
+.dup-badge{margin-left:6px;font-size:9px;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1px;color:#fff;background:var(--orange);padding:1px 6px;border-radius:3px}
+.muted{color:var(--muted)}.file{font-family:monospace;font-size:12px;color:#e8dcc8;white-space:nowrap}
+.btn-edit,.btn-del{border-radius:4px;font-size:11px;font-weight:600;font-family:'Rajdhani',sans-serif;padding:3px 8px;cursor:pointer;text-transform:uppercase}
+.btn-edit{background:rgba(201,168,76,.15);color:var(--gold2);border:1px solid rgba(201,168,76,.3)}
+.btn-del{background:rgba(192,57,43,.15);color:#e74c3c;border:1px solid rgba(192,57,43,.3);margin-left:3px}
+.actions-cell{white-space:nowrap}
+.pager{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px;background:var(--navy2);border-top:1px solid var(--border);font-family:'Rajdhani',sans-serif;font-weight:600;color:var(--gold)}
+.pager button{background:var(--navy3);border:1px solid var(--border);color:var(--white);padding:5px 12px;border-radius:4px;cursor:pointer}
+.pager button:disabled{opacity:.35;cursor:not-allowed}
+.loading-overlay{position:fixed;inset:0;background:rgba(9,21,37,.92);z-index:400;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.loading-overlay.hidden{display:none}
+.spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;color:var(--gold);letter-spacing:2px}
+.loading-sub{font-size:12px;color:var(--muted);text-align:center;max-width:320px;line-height:1.8}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--navy2);border:1px solid var(--gold);border-radius:10px;width:540px;max-width:95vw;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.6);max-height:92vh;overflow-y:auto}
+.modal h2{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--gold2);letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:10px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:5px}.form-group.full{grid-column:1/-1}
+.form-group label{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.form-group input{background:var(--navy3);border:1.5px solid var(--border);border-radius:6px;color:var(--white);font-size:16px;padding:8px 10px;outline:none;width:100%}
+.form-group input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+.form-group input.error{border-color:#e74c3c}
+.form-group input[readonly]{opacity:.7;font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold2)}
+input[type=date]{color-scheme:dark}
+.err-msg{font-size:11px;color:#e74c3c;min-height:13px}
+.live-msg{font-size:12px;padding:8px 10px;border-radius:6px;margin-top:2px;display:none;line-height:1.5}
+.live-msg.warn{display:block;background:rgba(192,57,43,.15);border:1px solid var(--red);color:#ff8a7a}
+.live-msg.info{display:block;background:rgba(41,128,185,.15);border:1px solid var(--blue);color:#8cc7ee}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+.btn-save{background:var(--green);border:none;color:#fff;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;padding:9px 20px;border-radius:6px;cursor:pointer;text-transform:uppercase}
+.btn-save:disabled{opacity:.5;cursor:not-allowed}
+.btn-cancel{background:transparent;border:1.5px solid var(--muted);color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;padding:9px 16px;border-radius:6px;cursor:pointer;text-transform:uppercase}
+.confirm-box{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:250;display:none;align-items:center;justify-content:center}
+.confirm-box.open{display:flex}
+.confirm-inner{background:var(--navy2);border:1px solid var(--red);border-radius:10px;padding:26px;width:420px;max-width:92vw;text-align:center}
+.confirm-inner h3{font-family:'Rajdhani',sans-serif;font-size:17px;color:#e74c3c;margin-bottom:8px}
+.confirm-inner p{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.confirm-btns{display:flex;gap:8px;justify-content:center}
+.btn-confirm-del{background:var(--red);border:none;color:#fff;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;padding:9px 20px;border-radius:6px;cursor:pointer}
+.btn-confirm-cancel{background:transparent;border:1.5px solid var(--muted);color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:12px;padding:9px 16px;border-radius:6px;cursor:pointer}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy2);border:1px solid var(--gold);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;padding:11px 18px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:300;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;max-width:90vw}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-color:var(--green);color:#58d68d}.toast.error-t{border-color:var(--red);color:#e74c3c}.toast.warn{color:var(--gold2)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.footer{background:#091525;border-top:1px solid var(--border);padding:8px 20px;display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media (max-width:768px){
+ .header{flex-wrap:wrap;height:auto;padding:10px 12px;gap:8px}.header-left,.header-right{flex:1 1 100%}.header-right{flex-wrap:wrap}
+ .search-section{padding:10px 12px}.search-box{flex:1 1 100%}.filter-select{flex:1 1 calc(50% - 4px);max-width:none}
+ .table-wrapper{max-height:calc(100vh - 330px)}table{font-size:14px}.form-grid{grid-template-columns:1fr}.modal{padding:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div><div class="loading-text">LOADING VEHICLE INDEX</div>
+  <div class="loading-sub" id="loadingMsg">Connecting to Google Sheets...</div>
+</div>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo-emblem">UII</div>
+    <div><div class="brand-title">United India Insurance</div><div class="brand-subtitle">Vehicle Index</div></div>
+  </div>
+  <div class="header-right">
+    <div class="sync-status" id="syncPill"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Connecting...</span></div>
+    <button class="hbtn hbtn-green" id="btnAdd">+ Add Vehicle</button>
+    <div class="header-badge" id="total-badge">— Records</div>
+  </div>
+</div>
+
+<div class="search-section">
+  <div class="search-box">
+    <span class="search-icon">&#128269;</span>
+    <input class="search-input" id="globalSearch" type="text" placeholder="Vehicle no. (HR61 8900 / 8900), title, file no, court..." autocomplete="off">
+  </div>
+  <select class="filter-select" id="seriesFilter"><option value="">All Series</option></select>
+  <select class="filter-select" id="courtFilter"><option value="">All Courts</option></select>
+  <label class="chk-lbl"><input type="checkbox" id="dupOnly"> Duplicates only</label>
+  <span class="result-count" id="resultCount">Loading...</span>
+  <button class="btn-clear" id="btnClear">&#10005; Clear</button>
+</div>
+
+<div class="table-wrapper">
+  <table>
+    <thead><tr>
+      <th onclick="sortTable('SERIES')" id="th-SERIES">Series <span class="sa">&#8597;</span></th>
+      <th onclick="sortTable('VEHICLE_NO')" id="th-VEHICLE_NO">Vehicle No. <span class="sa">&#8597;</span></th>
+      <th onclick="sortTable('DATE_OF_ACCIDENT')" id="th-DATE_OF_ACCIDENT">Date of Accident <span class="sa">&#8597;</span></th>
+      <th onclick="sortTable('COURT')" id="th-COURT">Court <span class="sa">&#8597;</span></th>
+      <th onclick="sortTable('TITLE')" id="th-TITLE">Title <span class="sa">&#8597;</span></th>
+      <th onclick="sortTable('FILE_NO')" id="th-FILE_NO">File No. <span class="sa">&#8597;</span></th>
+      <th class="no-sort" style="width:120px">Actions</th>
+    </tr></thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+<div class="pager" id="pager"></div>
+<div class="footer"><span>Live data — Google Sheets backend</span><span id="footerCount"></span></div>
+
+<!-- ADD / EDIT -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Add Vehicle</h2>
+    <div class="form-grid">
+      <div class="form-group"><label>Vehicle No. *</label>
+        <input type="text" id="f_veh" placeholder="e.g. HR61 8900" autocomplete="off" style="text-transform:uppercase">
+        <span class="err-msg" id="e_veh"></span></div>
+      <div class="form-group"><label>Series (auto — last 2 digits)</label>
+        <input type="text" id="f_series" readonly placeholder="--"></div>
+      <div class="form-group"><label>File No. *</label>
+        <input type="text" id="f_file" placeholder="e.g. HSR-1234" autocomplete="off" style="text-transform:uppercase">
+        <span class="err-msg" id="e_file"></span></div>
+      <div class="form-group"><label>Date of Accident</label>
+        <input type="date" id="f_date"><span class="err-msg" id="e_date"></span></div>
+      <div class="form-group full"><div class="live-msg" id="liveMsg"></div></div>
+      <div class="form-group full"><label>Court *</label>
+        <input type="text" id="f_court" list="courtList" placeholder="Select from list or type a new court" autocomplete="off" style="text-transform:uppercase">
+        <datalist id="courtList"></datalist><span class="err-msg" id="e_court"></span></div>
+      <div class="form-group full"><label>Title (Claimant VS Respondent)</label>
+        <input type="text" id="f_title" placeholder="e.g. RAMESH VS SURESH" autocomplete="off" style="text-transform:uppercase"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btnCancel">Cancel</button>
+      <button class="btn-save" id="btnSave">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE -->
+<div class="confirm-box" id="confirmBox">
+  <div class="confirm-inner">
+    <h3>Delete Record?</h3><p id="confirmMsg"></p>
+    <div class="confirm-btns">
+      <button class="btn-confirm-cancel" id="btnDelCancel">Cancel</button>
+      <button class="btn-confirm-del" id="btnConfirmDel">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbws5VWzJRcPEBFM8kW0sKGLduWRNRSEb8AULEFoWexNFXeF28RrYRyUAxeVSRB1Yd-9/exec';
+const PAGE_SIZE = 100;
+const $ = id => document.getElementById(id);
+
+let ALL = [], VIEW = [], dupCount = {}, page = 1, sortKey = '', sortDir = 1;
+let editingId = null, editingRec = null, deleteId = null;
+
+// ── helpers ──────────────────────────────────────────────
+const keyOf   = s => String(s == null ? '' : s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+const cleanTx = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().toUpperCase();
+const seriesOf = v => { const k = keyOf(v); return /\d\d$/.test(k) ? k.slice(-2) : ''; };
+const dupKey  = r => keyOf(r.VEHICLE_NO) + '|' + keyOf(r.FILE_NO);
+const isISO   = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '');
+const escHtml = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function fmtDate(s){ if(!s) return '<span class="muted">—</span>'; if(isISO(s)){const [y,m,d]=s.split('-');return d+'-'+m+'-'+y;} return escHtml(s); }
+
+function showToast(msg,type){const t=$('toast');t.innerHTML=msg;t.className='toast '+(type||'')+' show';clearTimeout(showToast._t);showToast._t=setTimeout(()=>{t.className='toast';},3500);}
+function setSync(state,label){$('syncDot').className='sync-dot '+state;$('syncLabel').textContent=label;}
+
+// ── JSONP ────────────────────────────────────────────────
+function jsonpCall(params, timeout=30000){
+  return new Promise((resolve,reject)=>{
+    const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const qs=Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(typeof v==='object'?JSON.stringify(v):String(v))).join('&');
+    const s=document.createElement('script');
+    const done=()=>{clearTimeout(timer);window[cb]=()=>{};if(s.parentNode)s.parentNode.removeChild(s);};
+    const timer=setTimeout(()=>{done();reject(new Error('Timeout'));},timeout);
+    window[cb]=d=>{done();(d&&d.success===false)?reject(Object.assign(new Error(d.error||'Error'),{duplicate:!!d.duplicate})):resolve(d);};
+    s.onerror=()=>{done();reject(new Error('Network error'));};
+    s.src=SCRIPT_URL+'?'+qs+'&callback='+cb+'&t='+Date.now();
+    document.head.appendChild(s);
+  });
+}
+async function jsonpRetry(params,n=2){let e;for(let i=0;i<n;i++){try{return await jsonpCall(params,45000+i*30000);}catch(x){e=x;}}throw e;}
+
+function cacheSave(){try{localStorage.setItem('vehicle_cache_v1',JSON.stringify({d:ALL,ts:Date.now()}));}catch(e){}}
+function cacheLoad(){try{const r=localStorage.getItem('vehicle_cache_v1');return r?JSON.parse(r):null;}catch(e){return null;}}
+
+// ── load ─────────────────────────────────────────────────
+function setData(arr){
+  ALL=(arr||[]).map(r=>{r.SERIES=String(r.SERIES||'');if(/^\d$/.test(r.SERIES))r.SERIES='0'+r.SERIES;r.VKEY=r.VKEY||keyOf(r.VEHICLE_NO);return r;});
+  recompute();
+  if(!urlApplied&&ALL.length){urlApplied=true;applyUrlParams();}
+}
+// Deep links:  ?q=HR618900   ?series=78   ?court=HISAR   ?dup=1   ?add=1&veh=HR618900&file=HSR-1&court=HISAR&title=A VS B
+let urlApplied=false;
+const VI_INJECT='__VI_PARAMS__';   // filled by Apps Script when served from the web app link
+function applyUrlParams(){
+  const p=new URLSearchParams(VI_INJECT.slice(0,4)==='__VI'?location.search:VI_INJECT);
+  if(![...p.keys()].length)return;
+  if(p.get('q'))$('globalSearch').value=p.get('q');
+  if(p.get('series'))$('seriesFilter').value=p.get('series');
+  if(p.get('court')&&!p.get('add'))$('courtFilter').value=p.get('court').toUpperCase();
+  if(p.get('dup'))$('dupOnly').checked=true;
+  applyFilters();
+  if(p.get('add')){
+    openModal();
+    if(p.get('veh'))$('f_veh').value=p.get('veh').toUpperCase();
+    if(p.get('file'))$('f_file').value=p.get('file').toUpperCase();
+    if(p.get('court'))$('f_court').value=p.get('court').toUpperCase();
+    if(p.get('title'))$('f_title').value=p.get('title').toUpperCase();
+    if(p.get('date'))$('f_date').value=p.get('date');
+    liveCheck();
+  }
+}
+async function init(){
+  setSync('syncing','Connecting...');
+  const slowTimer=setTimeout(()=>{$('loadingMsg').innerHTML='Taking long... Open the SCRIPT_URL with <b>?action=fetch</b> at the end in a new tab — it should show JSON data.<br>If it shows an error/login page, re-deploy the Apps Script (Who has access = Anyone).';},8000);
+  try{
+    const res=await jsonpRetry({action:'fetch'});
+    clearTimeout(slowTimer);
+    setData(res.data); cacheSave(); setSync('live','Live • Database');
+    $('loadingOverlay').classList.add('hidden');
+  }catch(err){
+    clearTimeout(slowTimer);
+    const c=cacheLoad();
+    if(c&&c.d&&c.d.length){setData(c.d);$('loadingMsg').textContent='Offline — showing last data saved on this device.';}
+    else{ALL=[];recompute();$('loadingMsg').textContent='Could not reach Google Sheets ('+err.message+'). Check SCRIPT_URL / deployment.';}
+    setSync('error','Offline — tap to retry');
+    setTimeout(()=>$('loadingOverlay').classList.add('hidden'),3500);
+    showToast('Offline — tap sync status to retry','warn');
+  }
+}
+async function refreshData(silent){
+  if(!silent)setSync('syncing','Syncing...');
+  try{
+    const res=await jsonpRetry({action:'fetch'});
+    setData(res.data); cacheSave(); setSync('live','Live • Database');
+    if(!silent)showToast('Synced with Google Sheets','success');
+  }catch(err){setSync('error','Sync failed — tap to retry');if(!silent)showToast('Sync failed: '+err.message,'error-t');}
+}
+
+// ── derived data / filters ───────────────────────────────
+function recompute(){
+  dupCount={};ALL.forEach(r=>{const k=dupKey(r);dupCount[k]=(dupCount[k]||0)+1;});
+  // series dropdown with counts
+  const sc={};ALL.forEach(r=>{if(r.SERIES)sc[r.SERIES]=(sc[r.SERIES]||0)+1;});
+  const ss=$('seriesFilter'),sp=ss.value;
+  ss.innerHTML='<option value="">All Series</option>'+Object.keys(sc).sort().map(s=>`<option value="${escHtml(s)}">Series ${escHtml(s)} (${sc[s]})</option>`).join('');
+  ss.value=sp;
+  // courts
+  const courts=[...new Set(ALL.map(r=>r.COURT).filter(Boolean))].sort();
+  const cs=$('courtFilter'),cp=cs.value;
+  cs.innerHTML='<option value="">All Courts</option>'+courts.map(c=>`<option value="${escHtml(c)}">${escHtml(c)}</option>`).join('');
+  cs.value=cp;
+  $('courtList').innerHTML=courts.map(c=>`<option value="${escHtml(c)}">`).join('');
+  applyFilters();
+}
+function applyFilters(keepPage){
+  const q=$('globalSearch').value.trim().toLowerCase(), qk=keyOf(q);
+  const ser=$('seriesFilter').value, court=$('courtFilter').value, dupOnly=$('dupOnly').checked;
+  VIEW=ALL.filter(r=>{
+    if(ser&&r.SERIES!==ser)return false;
+    if(court&&r.COURT!==court)return false;
+    if(dupOnly&&(dupCount[dupKey(r)]||0)<2)return false;
+    if(q){
+      if(qk&&r.VKEY.includes(qk))return true;
+      return (r.TITLE+' '+r.FILE_NO+' '+r.COURT).toLowerCase().includes(q);
+    }
+    return true;
+  });
+  if(sortKey){VIEW.sort((a,b)=>{const av=String(a[sortKey]||'').toLowerCase(),bv=String(b[sortKey]||'').toLowerCase();return av<bv?-sortDir:av>bv?sortDir:0;});}
+  if(!keepPage)page=1;
+  render();
+}
+function sortTable(k){
+  sortDir=sortKey===k?-sortDir:1;sortKey=k;
+  document.querySelectorAll('thead th').forEach(th=>{th.classList.remove('sorted');const a=th.querySelector('.sa');if(a)a.innerHTML='&#8597;';});
+  const th=$('th-'+k);th.classList.add('sorted');th.querySelector('.sa').innerHTML=sortDir===1?'&#8593;':'&#8595;';
+  applyFilters();
+}
+function clearAll(){
+  $('globalSearch').value='';$('seriesFilter').value='';$('courtFilter').value='';$('dupOnly').checked=false;
+  sortKey='';sortDir=1;document.querySelectorAll('thead th').forEach(th=>{th.classList.remove('sorted');const a=th.querySelector('.sa');if(a)a.innerHTML='&#8597;';});
+  applyFilters();
+}
+
+// ── render ───────────────────────────────────────────────
+function render(){
+  const n=VIEW.length, pages=Math.max(1,Math.ceil(n/PAGE_SIZE));
+  if(page>pages)page=pages;
+  const slice=VIEW.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE);
+  const tb=$('tableBody');
+  if(!n){tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><h3>No Records Found</h3><p>Try adjusting search / filters</p></div></td></tr>';}
+  else tb.innerHTML=slice.map(r=>{
+    const isDup=(dupCount[dupKey(r)]||0)>1;
+    return `<tr class="${isDup?'dup-row':''}">
+      <td><span class="series-badge">${escHtml(r.SERIES||'--')}</span></td>
+      <td><span class="veh">${escHtml(r.VEHICLE_NO)}</span>${isDup?'<span class="dup-badge">DUP</span>':''}</td>
+      <td>${fmtDate(r.DATE_OF_ACCIDENT)}</td>
+      <td>${escHtml(r.COURT)||'<span class="muted">—</span>'}</td>
+      <td>${escHtml(r.TITLE)}</td>
+      <td><span class="file">${escHtml(r.FILE_NO)}</span></td>
+      <td class="actions-cell"><button class="btn-edit" data-edit="${escHtml(r._id)}">&#9998; Edit</button><button class="btn-del" data-del="${escHtml(r._id)}">&#10005; Del</button></td>
+    </tr>`;}).join('');
+  const dupTotal=ALL.filter(r=>(dupCount[dupKey(r)]||0)>1).length;
+  $('resultCount').textContent='Showing '+n.toLocaleString()+' record'+(n!==1?'s':'');
+  $('total-badge').textContent=ALL.length.toLocaleString()+' Records';
+  $('footerCount').textContent=n+' of '+ALL.length+' records'+(dupTotal?' • '+dupTotal+' duplicate-marked rows':'');
+  $('pager').innerHTML=pages>1?`<button ${page<=1?'disabled':''} id="pgPrev">&laquo; Prev</button><span>Page ${page} / ${pages}</span><button ${page>=pages?'disabled':''} id="pgNext">Next &raquo;</button>`:'';
+  if(pages>1){$('pgPrev').onclick=()=>{page--;render();$('tableBody').scrollIntoView();document.querySelector('.table-wrapper').scrollTop=0;};$('pgNext').onclick=()=>{page++;render();document.querySelector('.table-wrapper').scrollTop=0;};}
+}
+$('tableBody').addEventListener('click',e=>{
+  const ed=e.target.closest('[data-edit]'),dl=e.target.closest('[data-del]');
+  if(ed)openModal(ed.dataset.edit);else if(dl)askDelete(dl.dataset.del);
+});
+
+// ── add / edit modal ─────────────────────────────────────
+function clearErrs(){['veh','file','date','court'].forEach(f=>{const i=$('f_'+(f==='veh'?'veh':f)),e=$('e_'+f);if(i)i.classList.remove('error');if(e)e.textContent='';});}
+function openModal(id){
+  editingId=id||null;editingRec=id?ALL.find(r=>r._id===id):null;
+  if(id&&!editingRec)return;
+  $('modalTitle').textContent=id?'Edit Vehicle Record':'Add Vehicle';
+  clearErrs();
+  const r=editingRec||{};
+  $('f_veh').value=r.VEHICLE_NO||'';$('f_file').value=r.FILE_NO||'';$('f_court').value=r.COURT||'';$('f_title').value=r.TITLE||'';
+  $('f_date').value=isISO(r.DATE_OF_ACCIDENT)?r.DATE_OF_ACCIDENT:'';
+  liveCheck();
+  if(r.DATE_OF_ACCIDENT&&!isISO(r.DATE_OF_ACCIDENT))$('e_date').textContent='Old value kept: "'+r.DATE_OF_ACCIDENT+'" (pick a date to replace)';
+  $('modalOverlay').classList.add('open');
+  setTimeout(()=>$('f_veh').focus(),50);
+}
+function closeModal(){$('modalOverlay').classList.remove('open');}
+function liveCheck(){
+  const veh=$('f_veh').value,file=$('f_file').value,vk=keyOf(veh),fk=keyOf(file);
+  $('f_series').value=seriesOf(veh)||(editingRec&&editingRec.VKEY===vk?editingRec.SERIES:'');
+  const box=$('liveMsg');box.className='live-msg';box.innerHTML='';
+  if(!vk)return;
+  const same=ALL.filter(r=>r.VKEY===vk&&r._id!==editingId);
+  const dup=fk?same.find(r=>keyOf(r.FILE_NO)===fk):null;
+  if(dup){box.className='live-msg warn';box.innerHTML='&#9888; <b>Duplicate!</b> '+escHtml(dup.VEHICLE_NO)+' + '+escHtml(dup.FILE_NO)+' already exists ('+escHtml(dup.COURT||'-')+', '+escHtml(dup.TITLE||'-')+'). Cannot save.';}
+  else if(same.length){box.className='live-msg info';box.innerHTML='&#8505; This vehicle already has '+same.length+' other case(s): '+same.slice(0,4).map(r=>escHtml(r.FILE_NO)).join(', ')+(same.length>4?'…':'')+'. A new File No. is allowed.';}
+}
+['f_veh','f_file'].forEach(id=>$(id).addEventListener('input',liveCheck));
+
+async function saveRecord(){
+  clearErrs();
+  const veh=cleanTx($('f_veh').value),file=cleanTx($('f_file').value),court=cleanTx($('f_court').value),title=cleanTx($('f_title').value);
+  let date=$('f_date').value;
+  if(!date&&editingRec&&editingRec.DATE_OF_ACCIDENT&&!isISO(editingRec.DATE_OF_ACCIDENT))date=editingRec.DATE_OF_ACCIDENT;
+  const vk=keyOf(veh);let ok=true;
+  const bad=(f,msg)=>{$('f_'+f).classList.add('error');$('e_'+f).textContent=msg;ok=false;};
+  if(!vk)bad('veh','Required');
+  else if(vk.length<4)bad('veh','Too short');
+  else if(!seriesOf(veh)&&!(editingRec&&editingRec.VKEY===vk&&editingRec.SERIES))bad('veh','Must end with 2 digits (Series)');
+  if(!file)bad('file','Required');
+  if(!court)bad('court','Required');
+  if(!ok)return;
+  const fk=keyOf(file);
+  const dup=ALL.find(r=>r._id!==editingId&&r.VKEY===vk&&keyOf(r.FILE_NO)===fk);
+  if(dup){bad('file','Duplicate: this Vehicle No. + File No. already exists');showToast('Duplicate entry — not saved','error-t');return;}
+  const btn=$('btnSave');btn.disabled=true;btn.textContent='Saving...';setSync('syncing','Saving...');
+  const rec={VEHICLE_NO:veh,FILE_NO:file,COURT:court,TITLE:title,DATE_OF_ACCIDENT:date};
+  try{
+    let res;
+    if(editingId){rec._id=editingId;res=await jsonpCall({action:'edit',record:rec});const i=ALL.findIndex(r=>r._id===editingId);if(i>=0)ALL[i]=res.record;showToast('&#10003; Record updated','success');}
+    else{res=await jsonpCall({action:'add',record:rec});ALL.push(res.record);showToast('&#10003; Added — Series '+res.record.SERIES,'success');}
+    setSync('live','Live • Database');cacheSave();closeModal();recompute();
+  }catch(err){
+    showToast(err.duplicate?'Duplicate entry — not saved':('Error: '+err.message),'error-t');
+    if(err.duplicate)bad('file',err.message);
+    setSync('error','Save failed');
+  }finally{btn.disabled=false;btn.textContent='Save Record';}
+}
+
+// ── delete ───────────────────────────────────────────────
+function askDelete(id){const r=ALL.find(x=>x._id===id);if(!r)return;deleteId=id;$('confirmMsg').textContent=r.VEHICLE_NO+' — '+r.FILE_NO+' ('+(r.TITLE||'')+') will be removed.';$('confirmBox').classList.add('open');}
+function closeConfirm(){$('confirmBox').classList.remove('open');deleteId=null;}
+async function confirmDelete(){
+  if(!deleteId)return;
+  const btn=$('btnConfirmDel');btn.disabled=true;btn.textContent='Deleting...';setSync('syncing','Deleting...');
+  try{await jsonpCall({action:'delete',id:deleteId});ALL=ALL.filter(r=>r._id!==deleteId);cacheSave();setSync('live','Live • Database');showToast('Record deleted','error-t');closeConfirm();recompute();}
+  catch(err){showToast('Error: '+err.message,'error-t');setSync('error','Delete failed');}
+  finally{btn.disabled=false;btn.textContent='Yes, Delete';}
+}
+
+// ── wiring ───────────────────────────────────────────────
+$('btnAdd').onclick=()=>openModal();
+$('btnCancel').onclick=closeModal;$('btnSave').onclick=saveRecord;
+$('btnDelCancel').onclick=closeConfirm;$('btnConfirmDel').onclick=confirmDelete;
+$('btnClear').onclick=clearAll;$('syncPill').onclick=()=>refreshData(false);
+let st;$('globalSearch').addEventListener('input',()=>{clearTimeout(st);st=setTimeout(()=>applyFilters(),150);});
+['seriesFilter','courtFilter','dupOnly'].forEach(id=>$(id).addEventListener('change',()=>applyFilters()));
+$('modalOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeConfirm();}});
+setInterval(()=>{if(!$('modalOverlay').classList.contains('open')&&!$('confirmBox').classList.contains('open'))refreshData(true);},180000);
+init();
+</script>
+</body>
+</html>
